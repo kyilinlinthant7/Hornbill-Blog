@@ -1,8 +1,13 @@
 <!-- Database Connection / Header / Navbar -->
-<?php 
-    require_once('config/db.php');
+<?php  
+    session_start();  
     require_once('layout/header.php');
     require_once('layout/navbar.php');
+
+    #get blogs
+     $stmt = $conn->prepare("SELECT blogs.id, blogs.title, blogs.content, blogs.image, blogs.created_at, users.name FROM blogs INNER JOIN users ON blogs.user_id = users.id ORDER BY blogs.id DESC");
+     $stmt->execute();
+     $blogs = $stmt->fetchAll(PDO::FETCH_OBJ);
 ?>
 
 <!-- Header -->
@@ -11,9 +16,9 @@
         <div class="row d-flex align-items-center justify-content-center">
             <div class="col-md-6 text-center">
                 <img src="assets/images/header.jpg" class="img-fluid rounded" alt="" data-aos="zoom-in"
-                    data-aos-duration="2000">
+                    data-aos-duration="1000">
             </div>
-            <div class="col-md-6 py-5 text-center" data-aos="zoom-in" data-aos-duration="2000">
+            <div class="col-md-6 py-5 text-center" data-aos="zoom-in" data-aos-duration="1000">
                 <h1>Today a reader, tomorrow a leader :)</h1>
                 <h5>Focus on your dream & fight for it, then become the king</h5>
             </div>
@@ -31,72 +36,26 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h3 data-aos="fade-right" data-aos-duration="2000">Read Our Blogs</h3>
-                <div class="heading-line" data-aos="fade-left" data-aos-duration="2000"></div>
-                <div class="card my-3" data-aos="zoom-in" data-aos-duration="2000">
+                <h3 data-aos="fade-right" data-aos-duration="1000">Read Our Blogs</h3>
+                <div class="heading-line" data-aos="fade-left" data-aos-duration="1000"></div>
+                <?php foreach($blogs as $blog): ?>
+                <div class="card my-3" data-aos="zoom-in" data-aos-duration="1000">
                     <div class="card-body p-0">
                         <div class="img-wrapper">
-                            <img src="assets/images/header.jpg" class="img-fluid" alt="">
+                            <img src="assets/blog-images/<?php echo $blog->image ?>" class="img-fluid" alt="">
                         </div>
                         <div class="content p-3">
-                            <h5>Lorem ipsum dolor sit amet.</h5>
-                            <div class="mb-3">2023-02-19 | by Ye Myint Soe</div>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus vel quam velit
-                                reiciendis repudiandae asperiores tenetur molestiae corporis nemo quasi,
-                                necessitatibus commodi unde eveniet non ea, voluptas libero, eaque veritatis.
-                                <a href="blog-detail.php" class="text-decoration-none">See More </a>
+                            <h5 class="fw-semibold"><?php echo $blog->title ?></h5>
+                            <div class="mb-3"><?php echo $blog->created_at ?> | by <?php echo $blog->name ?></div>
+                            <p>
+                                <?php echo substr($blog->content, 0, 150) ?>
+                                <a href="blog-detail.php?blog_id=<?php echo $blog->id ?>"
+                                    class="text-decoration-none">See More </a>
                             </p>
                         </div>
                     </div>
                 </div>
-                <div class="card my-3" data-aos="zoom-in" data-aos-duration="2000">
-                    <div class="card-body p-0">
-                        <div class="img-wrapper">
-                            <img src="assets/images/1.png" class="img-fluid" alt="">
-                        </div>
-                        <div class="content p-3">
-                            <h5>Lorem ipsum dolor sit amet.</h5>
-                            <div class="mb-3">2023-02-19 | by Ye Myint Soe</div>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus vel quam velit
-                                reiciendis repudiandae asperiores tenetur molestiae corporis nemo quasi,
-                                necessitatibus commodi unde eveniet non ea, voluptas libero, eaque veritatis.
-                                <a href="blog-detail.html" class="text-decoration-none">See More </a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="card my-3" data-aos="zoom-in" data-aos-duration="2000">
-                    <div class="card-body p-0">
-                        <div class="img-wrapper">
-                            <img src="assets/images/2.jpg" class="img-fluid" alt="">
-                        </div>
-                        <div class="content p-3">
-                            <h5>Lorem ipsum dolor sit amet.</h5>
-                            <div class="mb-3">2023-02-19 | by Ye Myint Soe</div>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus vel quam velit
-                                reiciendis repudiandae asperiores tenetur molestiae corporis nemo quasi,
-                                necessitatibus commodi unde eveniet non ea, voluptas libero, eaque veritatis.
-                                <a href="blog-detail.php" class="text-decoration-none">See More </a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="card my-3" data-aos="zoom-in" data-aos-duration="2000">
-                    <div class="card-body p-0">
-                        <div class="img-wrapper">
-                            <img src="assets/images/3.jpg" class="img-fluid" alt="">
-                        </div>
-                        <div class="content p-3">
-                            <h5>Lorem ipsum dolor sit amet.</h5>
-                            <div class="mb-3">2023-02-19 | by Ye Myint Soe</div>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus vel quam velit
-                                reiciendis repudiandae asperiores tenetur molestiae corporis nemo quasi,
-                                necessitatibus commodi unde eveniet non ea, voluptas libero, eaque veritatis.
-                                <a href="blog-detail.php" class="text-decoration-none">See More </a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
             <!-- Right Side Blogs Categories -->
             <?php require('layout/right-side.php'); ?>

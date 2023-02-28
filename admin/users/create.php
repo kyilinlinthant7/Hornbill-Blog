@@ -22,7 +22,7 @@
                 $stmt = $conn->prepare("INSERT INTO users(name, email, password, role) VALUES ('$name', '$email', '$password', '$role')");
                 $result = $stmt->execute();
                 if($result) {
-                    echo "<script>location.href='index.php?page=users'</script>";
+                    echo "<script>sweetAlert('created a user', 'users')</script>";
                 }
             }          
         }
@@ -36,7 +36,7 @@
                 <div class="card-header py-3 d-flex align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">User Create Form</h6>
                     <a href="index.php?page=users" class="btn btn-primary btn-sm">
-                    <i class="fas fa-angle-double-left"></i> Back </a>
+                        <i class="fas fa-angle-double-left"></i> Back </a>
                 </div>
                 <div class="card-body">
                     <form method="POST">

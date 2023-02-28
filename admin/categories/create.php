@@ -8,9 +8,9 @@ $nameErr = "";
         else {
             $stmt = $conn->prepare("INSERT INTO categories (name) VALUES ('$name')");
             $stmt->execute();
-            echo "<script>location.href = 'index.php?page=categories'</script>";
-        }     
-    }
+            echo "<script>sweetAlert('created a category', 'categories')</script>";
+}
+}
 ?>
 <div class="container-fluid">
 
@@ -21,7 +21,7 @@ $nameErr = "";
                 <div class="card-header py-3 d-flex align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Category Create Form</h6>
                     <a href="index.php?page=categories" class="btn btn-primary btn-sm">
-                    <i class="fas fa-angle-double-left"></i> Back </a>
+                        <i class="fas fa-angle-double-left"></i> Back </a>
                 </div>
                 <div class="card-body">
                     <form method="POST">

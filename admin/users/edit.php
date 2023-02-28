@@ -32,7 +32,7 @@
                 }     
                 $result = $stmt->execute();
                 if($result) {
-                    echo "<script>location.href='index.php?page=users'</script>";
+                    echo "<script>sweetAlert('updated a user', 'users')</script>";
                 }
             }          
         }
@@ -46,7 +46,7 @@
                 <div class="card-header py-3 d-flex align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">User Edit Form</h6>
                     <a href="index.php?page=users" class="btn btn-primary btn-sm">
-                    <i class="fas fa-angle-double-left"></i> Back </a>
+                        <i class="fas fa-angle-double-left"></i> Back </a>
                 </div>
                 <div class="card-body">
                     <form method="POST">
@@ -67,23 +67,17 @@
                         <div class=" mb-2">
                             <label for="">Role</label>
                             <select name="role" id="" class="form-control">
-                                <option value="admin" 
-                                    <?php if($user->role == 'admin'): ?>
-                                        selected
-                                    <?php endif ?>
-                                >Admin
+                                <option value="admin" <?php if($user->role == 'admin'): ?> selected <?php endif ?>>Admin
                                 </option>
-                                <option value="user"
-                                    <?php if($user->role == 'user'): ?>
-                                        selected
-                                    <?php endif ?>
-                                >User</option>
+                                <option value="user" <?php if($user->role == 'user'): ?> selected <?php endif ?>>User
+                                </option>
                             </select>
                         </div>
                         <div class=" mb-2">
                             <label for="">Password</label>
                             <input type="checkbox" id="checkbox" onclick="showPasswordInput()">
-                            <input type="text" name="password" id="password-input" class="form-control" style="display: none" placeholder="Enter new password">
+                            <input type="text" name="password" id="password-input" class="form-control"
+                                style="display: none" placeholder="Enter new password">
                             <span class="text-danger">
                                 <?php echo $passwordErr ?>
                             </span>
@@ -98,18 +92,16 @@
 </div>
 
 <script>
+function showPasswordInput() {
 
-    function showPasswordInput() {
+    let checkbox = document.getElementById('checkbox')
+    let passwordInput = document.getElementById('password-input')
 
-        let checkbox = document.getElementById('checkbox')
-        let passwordInput = document.getElementById('password-input')
-    
-        if(checkbox.checked) {
-            passwordInput.style.display = 'block'
-        } else {
-            passwordInput.style.display = 'none'
-        }
-
+    if (checkbox.checked) {
+        passwordInput.style.display = 'block'
+    } else {
+        passwordInput.style.display = 'none'
     }
 
+}
 </script>

@@ -1,48 +1,33 @@
+<?php 
+    # get categories
+    $cateStmt = $conn->prepare("SELECT * FROM categories");
+    $cateStmt->execute();
+    $categories = $cateStmt->fetchAll(PDO::FETCH_OBJ);
+
+    # get blogs
+    $blogStmt = $conn->prepare("SELECT blogs.id, blogs.title, blogs.content, blogs.image, blogs.created_at, users.name FROM blogs INNER JOIN users ON blogs.user_id = users.id ORDER BY blogs.id DESC LIMIT 4");
+    $blogStmt->execute();
+    $blogs = $blogStmt->fetchAll(PDO::FETCH_OBJ);
+?>
 <div class="col-md-4">
-    <h5 data-aos="fade-left" data-aos-duration="2000">Blogs Categories</h5>
-    <div class="heading-line" data-aos="fade-right" data-aos-duration="2000"></div>
-    <ul class="mb-5" data-aos="zoom-in" data-aos-duration="2000">
-        <li><a href="">Web Design</a></li>
-        <li><a href="">Front End Development</a></li>
-        <li><a href="">Back End Development</a></li>
-        <li><a href="">Mobile Development</a></li>
+    <h5 data-aos="fade-left" data-aos-duration="1000">Blogs Categories</h5>
+    <div class="heading-line" data-aos="fade-right" data-aos-duration="1000"></div>
+    <ul class="mb-5" data-aos="zoom-in" data-aos-duration="1000">
+        <?php foreach($categories as $category): ?>
+        <li><a href=""><?php echo $category->name ?></a></li>
+        <?php endforeach; ?>
     </ul>
-    <h5 data-aos="fade-left" data-aos-duration="2000">Blogs You May Like</h5>
-    <div class="heading-line" data-aos="fade-right" data-aos-duration="2000"></div>
-    <a href="">
+    <h5 data-aos="fade-left" data-aos-duration="1000">Blogs You May Like</h5>
+    <div class="heading-line" data-aos="fade-right" data-aos-duration="1000"></div>
+    <?php foreach($blogs as $blog): ?>
+    <a href="blog-detail.php?blog_id=<?php echo $blog->id ?>">
         <div class="recent-blog border rounded p-2 my-1 d-flex justify-content-between align-items-center"
-            data-aos="fade-left" data-aos-duration="2000">
-            <img src="assets/images/1.png" alt="">
+            data-aos="fade-left" data-aos-duration="1000">
+            <img src="assets/blog-images/<?php echo $blog->image ?>" alt="">
             <div class="ms-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem, asperiores?
+                <?php echo substr($blog->content, 0, 50) ?> ...
             </div>
         </div>
     </a>
-    <a href="">
-        <div class="recent-blog border rounded p-2 my-1 d-flex justify-content-between align-items-center"
-            data-aos="fade-left" data-aos-duration="2000">
-            <img src="assets/images/1.png" alt="">
-            <div class="ms-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem, asperiores?
-            </div>
-        </div>
-    </a>
-    <a href="">
-        <div class="recent-blog border rounded p-2 my-1 d-flex justify-content-between align-items-center"
-            data-aos="fade-left" data-aos-duration="2000">
-            <img src="assets/images/1.png" alt="">
-            <div class="ms-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem, asperiores?
-            </div>
-        </div>
-    </a>
-    <a href="">
-        <div class="recent-blog border rounded p-2 my-1 d-flex justify-content-between align-items-center"
-            data-aos="fade-left" data-aos-duration="2000">
-            <img src="assets/images/1.png" alt="">
-            <div class="ms-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem, asperiores?
-            </div>
-        </div>
-    </a>
+    <?php endforeach; ?>
 </div>

@@ -14,7 +14,7 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
+    <li <?php if(isset($_GET['page'])): ?> class="nav-item" <?php else: ?> class="nav-item active" <?php endif ?>>
         <a class="nav-link" href="index.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
@@ -23,66 +23,54 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <!-- <div class="sidebar-heading">
-        Interface
-    </div> -->
-
-    <!-- Nav Item - Pages Collapse Menu -->
-    <!-- <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
-            aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Components</span>
-        </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
-                <a class="collapse-item" href="buttons.html">Buttons</a>
-                <a class="collapse-item" href="cards.html">Cards</a>
-            </div>
-        </div>
-    </li> -->
-
-    <!-- Divider -->
-    <!-- <hr class="sidebar-divider"> -->
-
-    <!-- Heading -->
-    <!-- <div class="sidebar-heading">
-        Addons
-    </div> -->
-
     <!-- Nav Item - Lists -->
-    <li class="nav-item">
+    <li <?php 
+    if(isset($_GET['page'])) {
+        if($_GET['page'] === 'categories' || $_GET['page'] === 'categories-create' || $_GET['page'] === 'categories-edit') {
+            echo "class = 'nav-item active'";
+        } else {
+            echo "class = 'nav-item'";
+        }
+    } else {
+        echo "class = 'nav-item'";    
+    } 
+    ?>>
         <a class="nav-link" href="index.php?page=categories">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-fw fa-table"></i>
             <span>Categories</span></a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="index.php?page=users">
-            <i class="fas fa-fw fa-users"></i>
-            <span>Users</span></a>
-    </li>
-
-    <li class="nav-item">
+    <li <?php 
+    if(isset($_GET['page'])) {
+        if($_GET['page'] === 'blogs' || $_GET['page'] === 'blogs-create' || $_GET['page'] === 'blogs-edit') {
+            echo "class = 'nav-item active'";
+        } else {
+            echo "class = 'nav-item'";
+        }
+    } else {
+        echo "class = 'nav-item'";    
+    } 
+    ?>>
         <a class="nav-link" href="index.php?page=blogs">
             <i class="fas fa-fw fa-newspaper"></i>
             <span>Blogs</span></a>
     </li>
 
-    <!-- Nav Item - Tables -->
-    <!-- <li class="nav-item">
-        <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Tables</span></a>
-    </li> -->
-    <!-- Nav Item - Form -->
-    <!-- <li class="nav-item">
-        <a class="nav-link" href="form.html">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Form</span></a>
-    </li> -->
+    <li <?php 
+    if(isset($_GET['page'])) {
+        if($_GET['page'] === 'users' || $_GET['page'] === 'users-create' || $_GET['page'] === 'users-edit') {
+            echo "class = 'nav-item active'";
+        } else {
+            echo "class = 'nav-item'";
+        }
+    } else {
+        echo "class = 'nav-item'";    
+    }  
+    ?>>
+        <a class="nav-link" href="index.php?page=users">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Users</span></a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
