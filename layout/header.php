@@ -1,4 +1,5 @@
 <?php
+session_start();  
     require_once('config/db.php');
 ?>
 
@@ -15,6 +16,21 @@
     <link rel="stylesheet" href="assets/css/app.css">
     <!-- aos  -->
     <link rel="stylesheet" href="assets/aos/aos.css">
+
+    <!-- Sweet alert cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function sweetAlert(message, page) {
+        Swal.fire({
+            title: 'Congrats!',
+            text: 'You have ' + message + ' successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then(function() {
+            location.href = page
+        })
+    }
+    </script>
 </head>
 
 <body>

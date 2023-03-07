@@ -1,38 +1,48 @@
 <?php
+    # get categories
+    $stmt = $conn->prepare("SELECT * FROM categories");
+    $stmt->execute();
+    $categories = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    # create blogs
     $titleErr = "";
+    $categoryErr = "";
     $contentErr = "";
     $imageErr = "";
     
-        if(isset($_POST['blogCreateBtn'])) {
-            $title = $_POST['title'];
-            $content = $_POST['content'];
-            $userId = $_SESSION['user']->id;
-            $created_at = date('Y-m-d H:i:s');
-            
-            $imageName = $_FILES['image']['name'];
-            $imageTmpName = $_FILES['image']['tmp_name'];
-            $imageType = $_FILES['image']['type'];
-
-            if($title == "") {
-                $titleErr = "The title field is required!";
-            } elseif($content == "") {
-                $contentErr = "The content field is required!";
-            } elseif($imageName == "") {
-                $imageErr = "The image field is required!";
-            } else {
-                // setting image name unique for duplicating images condition
-                $imageName = uniqid() . '_' . $imageName;
-                if(in_array($imageType, ['image/png', 'image/jpg', 'image/jpeg'])) {
-                    move_uploaded_file($imageTmpName, "../assets/blog-images/$imageName");            
-                }
+            if(isset($_POST['blogCreateBtn'])) {
+                $title = $_POST['title'];
+                $categoryId = $_POST['category_id'];
+                $content = $_POST['content'];
+                $userId = $_SESSION['user']->id;
+                $created_at = date('Y-m-d H:i:s');
                 
-                $stmt = $conn->prepare("INSERT INTO blogs(title, content, image, user_id, created_at) VALUES ('$title','$content','$imageName', $userId, '$created_at')");
-                $result = $stmt->execute();
-                if($result) {
-                    echo "<script>sweetAlert('created a blog', 'blogs')</script>";
+                $imageName = $_FILES['image']['name'];
+                $imageTmpName = $_FILES['image']['tmp_name'];
+                $imageType = $_FILES['image']['type'];
+
+                if($title == "") {
+                    $titleErr = "The title field is required!";
+                } elseif($categoryId == "") {
+                    $categoryErr = "The category field is required!";
+                } elseif($content == "") {
+                    $contentErr = "The content field is required!";
+                } elseif($imageName == "") {
+                    $imageErr = "The image field is required!";
+                } else {
+                    // setting image name unique for duplicating images condition
+                    $imageName = uniqid() . '_' . $imageName;
+                    if(in_array($imageType, ['image/png', 'image/jpg', 'image/jpeg'])) {
+                        move_uploaded_file($imageTmpName, "../assets/blog-images/$imageName");            
+                    }
+                    
+                    $stmt = $conn->prepare("INSERT INTO blogs(title, category_id, content, image, user_id, created_at) VALUES ('$title', $categoryId, '$content','$imageName', $userId, '$created_at')");
+                    $result = $stmt->execute();
+                    if($result) {
+                        echo "<script>sweetAlert('created a blog', 'blogs')</script>";
+                    }
                 }
             }
-        }
 ?>
 <div class="container-fluid">
 
@@ -52,6 +62,18 @@
                             <input type="text" name="title" class="form-control">
                             <span class="text-danger">
                                 <?php echo $titleErr ?>
+                            </span>
+                        </div>
+                        <div class=" mb-2">
+                            <label for="">Category</label>
+                            <select name="category_id" id="" class="form-control">
+                                <option value="">Select Category</option>
+                                <?php foreach($categories as $category): ?>
+                                <option value="<?php echo $category->id ?>"><?php echo $category->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <span class="text-danger">
+                                <?php echo $categoryErr ?>
                             </span>
                         </div>
                         <div class=" mb-2">

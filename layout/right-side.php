@@ -14,7 +14,7 @@
     <div class="heading-line" data-aos="fade-right" data-aos-duration="1000"></div>
     <ul class="mb-5" data-aos="zoom-in" data-aos-duration="1000">
         <?php foreach($categories as $category): ?>
-        <li><a href=""><?php echo $category->name ?></a></li>
+        <li><a href="index.php?category_id=<?php echo $category->id ?>"><?php echo $category->name ?></a></li>
         <?php endforeach; ?>
     </ul>
     <h5 data-aos="fade-left" data-aos-duration="1000">Blogs You May Like</h5>

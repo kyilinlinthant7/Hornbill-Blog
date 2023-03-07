@@ -1,18 +1,25 @@
 <?php
     $blogId = $_GET['blog_id'];
 
+    # get categories
+    $cateStmt = $conn->prepare("SELECT * FROM categories");
+    $cateStmt->execute();
+    $categories = $cateStmt->fetchAll(PDO::FETCH_OBJ);
+
     # get blog
-    $stmt = $conn->prepare("SELECT * FROM blogs WHERE id = $blogId");
-    $stmt->execute();
-    $blog = $stmt->fetchObject();
+    $blogStmt = $conn->prepare("SELECT * FROM blogs WHERE id = $blogId");
+    $blogStmt->execute();
+    $blog = $blogStmt->fetchObject();
     
     # update blog
     $titleErr = "";
+    $categoryErr = "";
     $contentErr = "";
     $imageErr = ""; 
 
         if(isset($_POST['blogUpdateBtn'])) {
             $title = $_POST['title'];
+            $categoryId = $_POST['category_id'];
             $content = $_POST['content'];
             $userId = $_SESSION['user']->id;
             
@@ -22,18 +29,20 @@
 
             if($title == "") {
                 $titleErr = "The title field is required!";
-            } elseif($content == "") {
+            }  elseif($categoryId == "") {
+                $categoryErr = "The category field is required!";
+            }  elseif($content == "") {
                 $contentErr = "The content field is required!";
             } else {
                 if($imageName == "") {
-                    $stmt = $conn->prepare("UPDATE blogs SET title = '$title', content = '$content' WHERE id = $blogId");
+                    $stmt = $conn->prepare("UPDATE blogs SET title = '$title', category_id = '$categoryId', content = '$content' WHERE id = $blogId");
                 } else {
                     // delete old photo
                     unlink("../assets/blog-images/$blog->image");
                     if(in_array($imageType, ['image/png', 'image/jpg', 'image/jpeg'])) {
                         move_uploaded_file($imageTmpName, "../assets/blog-images/$imageName");            
                     }
-                    $stmt = $conn->prepare("UPDATE blogs SET title = '$title', content = '$content', image = '$imageName' WHERE id = $blogId");
+                    $stmt = $conn->prepare("UPDATE blogs SET title = '$title', category_id = '$categoryId', content = '$content', image = '$imageName' WHERE id = $blogId");
                 }
 
                 $result = $stmt->execute();
@@ -61,6 +70,22 @@
                             <input type="text" name="title" value="<?php echo $blog->title ?>" class="form-control">
                             <span class="text-danger">
                                 <?php echo $titleErr ?>
+                            </span>
+                        </div>
+                        <div class=" mb-2">
+                            <label for="">Category</label>
+                            <select name="category_id" id="" class="form-control">
+                                <option value="">Select Category</option>
+                                <?php foreach($categories as $category): ?>
+                                <option value="<?php echo $category->id ?>" <?php 
+                                    if($category->id == $blog->category_id) {
+                                        echo "selected";
+                                    }
+                                ?>><?php echo $category->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <span class="text-danger">
+                                <?php echo $categoryErr ?>
                             </span>
                         </div>
                         <div class=" mb-2">

@@ -8,6 +8,23 @@
     $stmt = $conn->prepare("SELECT blogs.title, blogs.content, blogs.image, blogs.created_at, users.name FROM blogs INNER JOIN users ON blogs.user_id = users.id WHERE blogs.id = $blogId");
     $stmt->execute();
     $blog = $stmt->fetchObject();
+
+    # create comment
+    if(isset($_POST['createCommentBtn'])) {
+        $text = $_POST['text'];
+        $userId = $_SESSION['user']->id;
+        $created_at = date('Y-m-d H:i:s');
+        $stmt = $conn->prepare("INSERT INTO comments (text, blog_id, user_id, created_at) VALUES ('$text', $blogId, $userId, '$created_at')");
+        $result = $stmt->execute();
+        if($result) {
+            echo "<script>sweetAlert('commented', 'blog-detail.php?blog_id=" . $blogId . "')</script>";
+        }
+    }
+
+    # get comments depending on blog
+    $cmtStmt = $conn->prepare("SELECT comments.text, users.name, comments.created_at FROM comments INNER JOIN users ON comments.user_id = users.id WHERE blog_id = $blogId");
+    $cmtStmt->execute();
+    $comments = $cmtStmt->fetchAll(PDO::FETCH_OBJ);
 ?>
 
 <div id="blog-detail">
@@ -28,35 +45,32 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Comment Section -->
                 <div class="comment">
+                    <?php if(isset($_SESSION['user'])): ?>
                     <h5 data-aos="fade-right" data-aos-duration="1000">Leave a Comment</h5>
-                    <form action="" data-aos="fade-left" data-aos-duration="1000">
+                    <form action="" method="POST" data-aos="fade-left" data-aos-duration="1000">
                         <div class="mb-2">
-                            <textarea name="" rows="5" class="form-control"></textarea>
+                            <textarea name="text" rows="5" class="form-control" required></textarea>
                         </div>
-                        <button class="btn">Submit</button>
+                        <button type="submit" name="createCommentBtn" class="btn">Submit</button>
                     </form>
+                    <?php else: ?>
+                    <a class="btn btn-primary" aria-current="page" href="#signIn" data-bs-toggle="offcanvas"
+                        aria-controls="staticBackdrop">Sign In to comment</a>
+                    <?php endif; ?>
+
+                    <h6 class="fw-bold mt-5">Users' Comments</h6>
+                    <?php foreach($comments as $comment): ?>
                     <div class="card card-body my-3" data-aos="fade-right" data-aos-duration="1000">
-                        <h6>Ye Myint Soe</h6>
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Alias, repudiandae?
+                        <h6><?php echo $comment->name ?></h6>
+                        <?php echo $comment->text ?>
                         <div class="mt-3">
-                            <span class="float-end">01.03.2023</span>
+                            <span class="float-end"><?php echo $comment->created_at ?></span>
                         </div>
                     </div>
-                    <div class="card card-body my-3" data-aos="fade-right" data-aos-duration="1000">
-                        <h6>Lisa</h6>
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Alias, repudiandae?
-                        <div class="mt-3">
-                            <span class="float-end">01.03.2023</span>
-                        </div>
-                    </div>
-                    <div class="card card-body my-3" data-aos="fade-right" data-aos-duration="1000">
-                        <h6>Jiso</h6>
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Alias, repudiandae?
-                        <div class="mt-3">
-                            <span class="float-end">01.03.2023</span>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
             <!-- Right Side Blogs Categories -->

@@ -1,13 +1,17 @@
 <!-- Database Connection / Header / Navbar -->
 <?php  
-    session_start();  
     require_once('layout/header.php');
     require_once('layout/navbar.php');
 
-    #get blogs
-     $stmt = $conn->prepare("SELECT blogs.id, blogs.title, blogs.content, blogs.image, blogs.created_at, users.name FROM blogs INNER JOIN users ON blogs.user_id = users.id ORDER BY blogs.id DESC");
-     $stmt->execute();
-     $blogs = $stmt->fetchAll(PDO::FETCH_OBJ);
+    #get blogs depending on categories
+    if(isset($_GET['category_id'])) {
+        $categoryId = $_GET['category_id'];
+        $stmt = $conn->prepare("SELECT blogs.id, blogs.title, blogs.content, blogs.image, blogs.created_at, users.name FROM blogs INNER JOIN users ON blogs.user_id = users.id WHERE blogs.category_id = $categoryId ORDER BY blogs.id DESC ");
+    } else {
+        $stmt = $conn->prepare("SELECT blogs.id, blogs.title, blogs.content, blogs.image, blogs.created_at, users.name FROM blogs INNER JOIN users ON blogs.user_id = users.id ORDER BY blogs.id DESC");
+    }
+    $stmt->execute();
+    $blogs = $stmt->fetchAll(PDO::FETCH_OBJ);
 ?>
 
 <!-- Header -->

@@ -1,4 +1,21 @@
 <?php
+    # users sign up
+        if(isset($_POST['userSignUpBtn'])) {
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            
+            if($name != "" && $email != "" && $password != "") {
+                $password = md5($password);
+                $stmt = $conn->prepare("INSERT INTO users(name, email, password, role) VALUES ('$name', '$email', '$password', 'user')");
+                $result = $stmt->execute();
+                if($result) {
+                    echo "<script>sweetAlert('signed up', 'index.php')</script>";
+                } 
+            }
+        }
+
+    # users/admins sign in
     if(isset($_POST['signInBtn'])) {
         $email = $_POST['email'];
         $password = md5($_POST['password']);
@@ -9,12 +26,29 @@
 
         if($user) {
             $_SESSION['user'] = $user;
-            echo "<script>location.href='admin/index.php'</script>";
+            if($user->role === 'admin') {
+                echo "<script>sweetAlert('signed in', 'admin/index.php')</script>";
+            } else {
+                echo "<script>sweetAlert('signed in', 'index.php')</script>";
+            }            
         } else {
-            echo "<script>alert('Sorry! sign in fail')</script>";
-        }       
-    }
+            ?>
+<script>
+Swal.fire({
+    title: 'Sorry!',
+    text: 'Sign in fail.',
+    icon: 'error',
+    confirmButtonText: 'OK'
+}).then(function() {
+    location.href = 'index.php'
+})
+</script>
+
+<?php 
+}
+}
 ?>
+
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" id="footer-wave">
     <path fill="#6366f1" fill-opacity="1"
@@ -36,17 +70,17 @@
     </div>
     <div class="offcanvas-body">
         <div class="">
-            <form action="">
+            <form method="POST">
                 <div class="mb-2">
-                    <input type="text" class="form-control" placeholder="name">
+                    <input type="text" name="name" class="form-control" placeholder="name" required>
                 </div>
                 <div class="mb-2">
-                    <input type="text" class="form-control" placeholder="email">
+                    <input type="text" name="email" class="form-control" placeholder="email" required>
                 </div>
                 <div class="mb-2">
-                    <input type="text" class="form-control" placeholder="password">
+                    <input type="password" name="password" class="form-control" placeholder="password" required>
                 </div>
-                <button class="btn">Sign Up</button>
+                <button type="submit" name="userSignUpBtn" class=" btn">Sign Up</button>
             </form>
         </div>
     </div>
@@ -66,10 +100,14 @@
                     <input type="text" name="email" required class="form-control" placeholder="email">
                 </div>
                 <div class="mb-2">
-                    <input type="text" name="password" required class="form-control" placeholder="password">
+                    <input type="password" name="password" required class="form-control" placeholder="password">
                 </div>
                 <button type="submit" name="signInBtn" class="btn">Sign In</button>
             </form>
+            <a href="#signUp" data-bs-toggle="offcanvas" class="d-block my-2" style="font-size: 13px;">You have no
+                account yet?
+                Click
+                here.</a>
         </div>
     </div>
 </div>

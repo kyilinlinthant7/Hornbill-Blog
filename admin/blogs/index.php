@@ -1,6 +1,9 @@
-<?php  
-    # read blogs
-    $stmt = $conn->prepare("SELECT * FROM blogs ORDER BY id DESC");
+<?php
+    # retrieve data
+    $stmt = $conn->prepare("SELECT blogs.id, blogs.title, blogs.content, blogs.image, blogs.created_at, categories.name AS category_name, users.name AS user_name FROM blogs 
+    INNER JOIN categories ON blogs.category_id = categories.id
+    INNER JOIN users on blogs.user_id = users.id 
+    ORDER BY id DESC");
     $stmt->execute();
     $blogs = $stmt->fetchAll(PDO::FETCH_OBJ);
 
@@ -39,6 +42,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Image</th>
+                                    <th>Category</th>
                                     <th>Title</th>
                                     <th>Content</th>
                                     <th>Author</th>
@@ -56,24 +60,27 @@
                                         <img src="../assets/blog-images/<?php echo $blog->image ?>" alt=""
                                             style="width: 100px;">
                                     </td>
+                                    <td><?php echo $blog->category_name ?></td>
                                     <td><?php echo $blog->title ?></td>
                                     <td>
                                         <div style="max-width: 300px; max-height: 200px; overflow: auto;">
                                             <?php echo $blog->content ?>
                                         </div>
                                     </td>
-                                    <td><?php echo $blog->user_id ?></td>
+                                    <td><?php echo $blog->user_name ?></td>
                                     <td><?php echo $blog->created_at ?></td>
                                     <td>
                                         <form method="POST">
                                             <input type="hidden" name="blog_id" value="<?php echo $blog->id ?>" />
                                             <a href="index.php?page=blogs-edit&blog_id=<?php echo $blog->id ?>"
-                                                class="btn btn-success btn-sm"><i class="far fa-edit"></i>
-                                                Edit</a>
-                                            <button name="blogDeleteBtn" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you sure to delete?');">
-                                                <i class="far fa-trash-alt"></i> Delete
-                                            </button>
+                                                class="btn btn-success btn-sm m-1" title="Edit"><i
+                                                    class="far fa-edit"></i></a>
+                                            <button name="blogDeleteBtn" class="btn btn-danger btn-sm m-1"
+                                                onclick="return confirm('Are you sure to delete?');" title="Delete">
+                                                <i class="far fa-trash-alt"></i></button>
+                                            <a href="index.php?page=blogs-comments&blog_id=<?php echo $blog->id ?>"
+                                                class="btn btn-info btn-sm m-1" title="Comments"><i
+                                                    class="far fa-comment-dots"></i></a>
                                         </form>
                                     </td>
                                 </tr>

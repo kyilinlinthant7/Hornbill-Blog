@@ -3,8 +3,27 @@
     session_start();
     if(!isset($_SESSION['user'])) {
         header('location:../index.php');
+    } else {
+        if($_SESSION['user']->role !== 'admin') {
+            header('location: ../index.php');
+        }
     }
     require_once('layout/header.php'); 
+    
+    # get tables count
+    function getRowCount($table) {
+        global $conn;
+        $stmt = $conn->prepare("SELECT COUNT(*) AS count FROM $table");
+        $stmt->execute();
+        $data = $stmt->fetchObject();
+        return $data;
+    }
+
+    # get each data count
+    $category = getRowCount('categories');
+    $blog = getRowCount('blogs');
+    $user = getRowCount('users');
+    $comment = getRowCount('comments');
 ?>
 
 <!-- Page Wrapper -->
@@ -50,6 +69,9 @@
                     case 'blogs-edit':
                         require_once('blogs/edit.php');
                         break;
+                    case 'blogs-comments':
+                        require_once('blogs/comments.php');
+                        break;
 
                     # users
                     case 'users':
@@ -60,7 +82,10 @@
                         break;
                     case 'users-edit':
                         require_once('users/edit.php');
-                        break;                 
+                        break;   
+                    case 'users-profile':
+                        require_once('users/profile.php');
+                        break;               
                     }
                 else:
             ?>
@@ -74,15 +99,17 @@
                 <!-- Content Row -->
                 <div class="row">
 
-                    <!-- Earnings (Monthly) Card Example -->
+                    <!-- Categories Card -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-primary shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Earnings (Monthly)</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                            Categories</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            <?php echo $category->count ?>
+                                        </div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -92,15 +119,16 @@
                         </div>
                     </div>
 
-                    <!-- Earnings (Monthly) Card Example -->
+                    <!-- Blogs Card -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Earnings (Annual)</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                            Blogs</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            <?php echo $blog->count ?></div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -110,24 +138,18 @@
                         </div>
                     </div>
 
-                    <!-- Earnings (Monthly) Card Example -->
+                    <!-- Users Card -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-info shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Users
                                         </div>
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-auto">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="progress progress-sm mr-2">
-                                                    <div class="progress-bar bg-info" role="progressbar"
-                                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                        aria-valuemax="100"></div>
-                                                </div>
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                    <?php echo $user->count ?></div>
                                             </div>
                                         </div>
                                     </div>
@@ -139,15 +161,16 @@
                         </div>
                     </div>
 
-                    <!-- Pending Requests Card Example -->
+                    <!-- Comments -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-warning shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Pending Requests</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                            Comments</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            <?php echo $comment->count ?></div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-comments fa-2x text-gray-300"></i>
